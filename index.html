@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Tutor</title>
+    <link rel="stylesheet" href="css/styles.css">
+     
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="navbar-logo">
+                <a href="#">Smart Tutor</a>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="about.html">Acerca de</a></li>
+                <li><a href="login.html">Iniciar sesión</a></li>
+                <li><a href="register.html">Registro</a></li>
+            </ul>
+            <div class="navbar-toggle" id="navbar-toggle">
+                &#9776;
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <!-- Video de fondo -->
+            <video autoplay muted loop class="video-bg">
+                <source src="images/video_dev.mp4" type="video/mp4">
+                Tu navegador no soporta el elemento de video.
+            </video>
+            <div class="hero-content">
+                <h1>TRANSFORMA TUS DUDAS EN</h1>
+                <h1 id="t1">CONOCIMIENTO</h1>
+                <button onclick="irAPagina()" class="btn btn-primary">Registro</button>
+            </div>
+        </section>
+
+        <section class="features container">
+            <div class="feature">
+                <img src="images/dev1.webp" alt="¿Qué es smart tutor?" width="200px" height="200px">
+                <div class="feature-content">
+                    <h2>¿Qué es smart tutor?</h2>
+                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ratione eos quos, explicabo commodi voluptatem dolore quaerat blanditiis hic magnam quibusdam consequatur sint sunt neque delectus similique alias vitae pariatur. Commodi!</p>
+                </div>
+            </div>
+            <div class="feature">
+                <img src="images/dev2.webp" alt="¿Cuál es su objetivo?" width="200px" height="200px">
+                <div class="feature-content">
+                    <h2>¿Cuál es su objetivo?</h2>
+                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ratione eos quos, explicabo commodi voluptatem dolore quaerat blanditiis hic magnam quibusdam consequatur sint sunt neque delectus similique alias vitae pariatur. Commodi!</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+         function irAPagina() {
+            window.location.href = "register.html"; // Cambia por la URL o página de destino
+         }
+        const toggleButton = document.getElementById('navbar-toggle');
+        const menu = document.querySelector('.navbar-menu');
+
+        toggleButton.addEventListener('click', () => {
+            menu.classList.toggle('active');
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles3.css">
+    
+    <title>Smart Tutor</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="navbar-logo">
+                <a href="#">SmartTutor</a>
+            </div>
+        </nav>
+    </header>
+    
+    <section id="avatar-container" style="width: 300px; height: 300px; border: 1px solid #000;">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
+        <script>
+
+            // Crear la escena, cámara y renderizador
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, 300 / 300, 0.1, 1000); // Ajustar el aspecto a 300x300
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize(300, 300); // Tamaño del renderizador para que coincida con la sección
+            renderer.setClearColor(0xffffff);
+
+            // Seleccionar la sección donde se mostrará el avatar
+            const section = document.getElementById('avatar-container');
+            section.appendChild(renderer.domElement);
+
+            const light = new THREE.DirectionalLight(0xffffff, 2); // Aumentar intensidad
+            light.position.set(2, 5, 2).normalize(); // Ajustar posición
+            light.castShadow = true; // Habilitar sombras
+            scene.add(light);
+
+            // Cargar el archivo GLB
+            const loader = new THREE.GLTFLoader();
+            loader.load('images/korean_girl_readyplayerme_avatar.glb', function (gltf) {
+                const avatar = gltf.scene;
+                scene.add(avatar);
+                avatar.position.set(0,-160,-20); // Posicionar el avatar
+                avatar.scale.set(100, 100, 100);    // Ajustar el tamaño del avatar
+            }, undefined, function (error) {
+                console.error(error);
+            });
+
+            camera.position.z = 5;
+
+            // Animar la escena
+            function animate() {
+                requestAnimationFrame(animate);
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            // Ajustar la escena al redimensionar la ventana (opcional para un canvas pequeño)
+            window.addEventListener('resize', function () {
+                renderer.setSize(300, 300); // Mantener el tamaño fijo
+                camera.aspect = 300 / 300;
+                camera.updateProjectionMatrix();
+            });
+        </script>
+    </section>
+    <h1>Grabar Audio</h1>
+
+    <!-- Botón para empezar a grabar -->
+    <button id="startRecord">Comenzar Grabación</button>
+    <button id="stopRecord" disabled>Detener Grabación</button>
+
+    <!-- Elemento para mostrar la grabación -->
+    <audio id="audioPlayback" controls></audio>
+
+    <!-- Botón para enviar el archivo de audio -->
+    <form id="audioForm" method="POST" action="/upload" enctype="multipart/form-data">
+        <input type="file" id="audioFile" name="audioFile" style="display:none;">
+        <button type="submit" id="uploadButton" disabled>Enviar Audio</button>
+    </form>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+
+        const startRecordButton = document.getElementById('startRecord');
+        const stopRecordButton = document.getElementById('stopRecord');
+        const audioPlayback = document.getElementById('audioPlayback');
+        const uploadButton = document.getElementById('uploadButton');
+        const audioFileInput = document.getElementById('audioFile');
+
+        startRecordButton.addEventListener('click', async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = (event) => {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const audioURL = URL.createObjectURL(audioBlob);
+                audioPlayback.src = audioURL;
+
+                // Crear un archivo para enviar
+                const file = new File([audioBlob], "audio.wav", { type: 'audio/wav' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                audioFileInput.files = dataTransfer.files;
+
+                uploadButton.disabled = false;
+            };
+
+            mediaRecorder.start();
+            startRecordButton.disabled = true;
+            stopRecordButton.disabled = false;
+        });
+
+        stopRecordButton.addEventListener('click', () => {
+            mediaRecorder.stop();
+            startRecordButton.disabled = false;
+            stopRecordButton.disabled = true;
+        });
+    </script>
+</body>
+</html>
